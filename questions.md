@@ -1,26 +1,43 @@
-**Questions**
+# Questions
 
-1) How does the runtime know whether a specific tool (e.g., git.clone, llm.summarize) actually exists?
-Without this, we risk:
-  Runtime failures – missing implementations
-  Silent no-ops – when a spec calls a tool that doesn’t exist
+## 1. How does the runtime know whether a specific tool (e.g., `git.clone`, `llm.summarize`) actually exists?
 
-**Proposed Solution**
+Without this validation, we risk:
+
+- **Runtime failures** – missing implementations
+- **Silent no-ops** – when a spec calls a tool that doesn’t exist
+
+---
+
+## Proposed Solution
 
 To prevent mismatches between declared and available tools:
-  - Static Tool Registry
-      Maintain an in-memory (or managed) registry of all tools available to the runtime.
-      This ensures quick lookups and avoids surprises during execution.
 
-  - Control Plane RPC Validation
-      On startup or deployment, validate tools by making an RPC call to the control plane to confirm their implementations exist.
+### Static Tool Registry
+- Maintain an **in-memory (or managed) registry** of all tools available to the runtime.
+- Ensures **fast lookups** and avoids surprises during execution.
 
-  - Stub-based Lazy Validation (inspired by MCP)
-      Workers periodically pull “tool stubs” from the control plane — lightweight representations of tool definitions — and validate availability at runtime. This allows flexibility while avoiding heavy synchronization.
+### Control Plane RPC Validation
+- On **startup or deployment**, validate tools by making an **RPC call** to the Control Plane.
+- Confirms that implementations exist and are up to date.
 
-**Design Decision**
+### Stub-based Lazy Validation (inspired by MCP)
+- Workers **periodically pull “tool stubs”** from the Control Plane — lightweight representations of tool definitions.
+- They **validate availability at runtime**, offering flexibility while avoiding heavy synchronization.
 
-Every worker must register itself with the Control Plane, including metadata about:
-  - Its identity and capabilities
-  - The tools it can execute
-This registration happens before entering the execution context, ensuring both sides (control plane and worker) share a consistent view of available tools.
+---
+
+## 2. How are specs discovered and registered into the Control Plane?
+
+Should this be done manually (e.g., via a function call or REST API that triggers an RPC)?
+Or should there be an **introspective watcher** that observes the subsystem?
+
+---
+## Proposed Solution
+
+### Watcher-based Discovery
+- Continuously watches a directory tree (e.g., `/specs/`).
+- Whenever a `.yaml` or `.yml` spec **appears, changes, or disappears**, it:
+  - **Validates** the spec
+  - **Loads** it
+  - **Re-registers** it with the Control Plane
