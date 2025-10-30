@@ -1,0 +1,44 @@
+version: "0.1"
+capability: analyze_repo
+description: |
+  Analyze a public GitHub repository and summarize its health, activity, and code composition.
+  Used by agents to perform structured repo analysis safely.
+
+inputs:
+  url:
+    type: string
+    description: GitHub repository URL
+    required: true
+
+permissions:
+  network: read-only
+  filesystem: ephemeral
+  tools:
+    - git.clone
+    - repo.stats
+    - llm.summarize
+
+plan:
+  - id: clone_repo
+    use: git.clone
+    with:
+      repo_url: ${{ inputs.url }}
+    output: repo_path
+
+  - id: analyze_structure
+    use: repo.stats
+    with:
+      path: ${{ clone_repo.output.repo_path }}
+    output: stats
+
+  - id: summarize
+    use: llm.summarize
+    with:
+      prompt: |
+        Summarize this repository’s purpose, health, and code composition:
+        ${{ analyze_structure.output }}
+    output: summary
+
+returns:
+  summary: ${{ summarize.output }}
+  metrics: ${{ analyze_structure.output.metrics }}
