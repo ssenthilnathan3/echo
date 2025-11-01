@@ -2,6 +2,7 @@ import hashlib
 import json
 from typing import Dict, Optional
 from datetime import datetime, timezone
+from typing_extensions import override
 from pydantic import BaseModel, Field, computed_field
 
 
@@ -19,12 +20,25 @@ class EchoEvent(BaseModel):
         ts = self.timestamp.replace(tzinfo=timezone.utc).isoformat(
             timespec="milliseconds"
         )
-
         payload_str = (
             json.dumps(self.payload, sort_keys=True, separators=(",", ":"))
             if self.payload is not None
             else ""
         )
-
         data = f"{ts}|{self.name}|{self.source}|{payload_str}"
         return hashlib.sha256(data.encode("utf-8")).hexdigest()
+
+    @override
+    def __str__(self) -> str:
+        """Readable string representation of the event."""
+        return (
+            f"[{self.timestamp.isoformat(timespec='milliseconds')}] "
+            f"{self.source}:{self.name} "
+            f"{json.dumps(self.payload, sort_keys=True) if self.payload else '{}'} "
+            f"#{self.hash[:8]}"
+        )
+
+    @override
+    def __repr__(self) -> str:
+        """Compact debug-friendly version."""
+        return f"EchoEvent(name={self.name!r}, source={self.source!r}, hash={self.hash[:8]!r})"

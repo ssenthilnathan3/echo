@@ -5,25 +5,16 @@ import sys
 import os
 import yaml
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
-_ = load_dotenv()
+def _load_validate(yaml_path: str):
+    if not yaml_path.endswith((".yaml", ".yml")):
+        raise ValueError("yaml_path must end with .yaml or .yml")
 
-PUBLIC_YAML_PATH = os.getenv("PUBLIC_YAML_PATH")
-
-
-def load_validate():
-    if not PUBLIC_YAML_PATH:
-        raise ValueError("PUBLIC_YAML_PATH not found in environment variable")
-
-    if not PUBLIC_YAML_PATH.endswith((".yaml", ".yml")):
-        raise ValueError("PUBLIC_YAML_PATH must end with .yaml or .yml")
-
-    if not os.path.exists(PUBLIC_YAML_PATH):
-        raise FileNotFoundError(f"File not found at path: {PUBLIC_YAML_PATH}")
+    if not os.path.exists(yaml_path):
+        raise FileNotFoundError(f"File not found at path: {yaml_path}")
 
     try:
-        with open(PUBLIC_YAML_PATH) as stream:
+        with open(yaml_path) as stream:
             loaded_file = yaml.safe_load(stream)
 
             try:
@@ -38,9 +29,9 @@ def load_validate():
         raise ValueError(f"Invalid YAML syntax: {e}") from e
 
 
-def load():
+def load(yaml_path):
     try:
-        return load_validate()
+        return _load_validate(yaml_path)
     except Exception as e:
         print(f"Error loading YAML: {e}")
         return None

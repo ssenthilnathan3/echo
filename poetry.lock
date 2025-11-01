@@ -1146,6 +1146,34 @@ files = [
 ]
 
 [[package]]
+name = "nats-py"
+version = "2.12.0"
+description = "NATS client for Python"
+optional = false
+python-versions = ">=3.7"
+groups = ["main"]
+files = [
+    {file = "nats_py-2.12.0.tar.gz", hash = "sha256:2981ca4b63b8266c855573fa7871b1be741f1889fd429ee657e5ffc0971a38a1"},
+]
+
+[package.extras]
+aiohttp = ["aiohttp"]
+fast-parse = ["fast-mail-parser"]
+nkeys = ["nkeys"]
+
+[[package]]
+name = "nats-server"
+version = "0.0.0"
+description = "NATS server utilities - package name reserved"
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "nats_server-0.0.0-py3-none-any.whl", hash = "sha256:e0177cee8cf7075701e5b035a998e6c0804f0549ae71df14c4c1edf8b3ff7fa0"},
+    {file = "nats_server-0.0.0.tar.gz", hash = "sha256:eceb71a6fec36a6b0039a71910e90ee549f88b61f493fcc8787e41ee25c722fc"},
+]
+
+[[package]]
 name = "nodeenv"
 version = "1.9.1"
 description = "Node.js virtual environment builder"
@@ -2478,4 +2506,4 @@ dev = ["pytest", "setuptools"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "71b8c4e0d9721a71394ecef1a5dcccb652b5d58147690ecd2ec9f4cbf2522d71"
+content-hash = "ef10b2586750b85b6321f91acde14b7d6378ee1df19ce396e92586e08356ca07"
