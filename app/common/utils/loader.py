@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 from pydantic import ValidationError
-from app.common.models.spec import Spec
+from app.common.models.echo import Echo
 import sys
 import os
 import yaml
@@ -27,8 +27,8 @@ def load_validate():
             loaded_file = yaml.safe_load(stream)
 
             try:
-                spec_schema = Spec(**loaded_file)
-                print(spec_schema.model_dump())
+                echo_schema = Echo(**loaded_file)
+                print(echo_schema.model_dump())
             except ValidationError as e:
                 for err in e.errors():
                     print(f" - {err['loc']}: {err['msg']}")

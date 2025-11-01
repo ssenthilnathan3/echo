@@ -34,7 +34,7 @@ class Step(BaseModel):
         return v
 
 
-class Spec(BaseModel):
+class Echo(BaseModel):
     version: str = Field(..., description="config version")
     capability: str = Field(..., description="info about capabiltiy of the spec")
     description: str = Field(..., description="short description about the capability")
