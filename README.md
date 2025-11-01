@@ -1,9 +1,4 @@
 # Echo
-
-A distributed orchestration system for executing multi-step workflows defined in YAML specifications.
-
-
-**for dummies**
 Echo is not a workflow engine for humans; it’s an execution layer for AI agents.
 You declare what tools exist, how they can be used, and how their side effects are handled.
 Echo ensures those tools are orchestrated deterministically — so your AI can act safely, reproducibly, and autonomously.
